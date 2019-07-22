@@ -8,5 +8,5 @@ In stablecoins, such as Dai, agents open a Collateralized Debt Position (CDP) th
 ## Objective
 Honest and rational agents that act in the interest of the protocol should be able to reduce their collateral. Specifically, we want to target the speculator agents and reward them with reduced collateral for keeping the underlying coin stable.
 
-# Approach
+## Approach
 The start of the project will include researching the problem from a theoretical point of view and finish with a proof of concept implementation.
