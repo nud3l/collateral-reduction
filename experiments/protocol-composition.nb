@@ -1,0 +1,63 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      1581,         55]
+NotebookOptionsPosition[      1079,         38]
+NotebookOutlinePosition[      1417,         53]
+CellTagsIndexPosition[      1374,         50]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Composition of Cryptoeconomic Protocols", "Title",
+ CellChangeTimes->{{3.776745380908304*^9, 
+  3.77674540756196*^9}},ExpressionUUID->"2d38deca-0bb4-4d0d-ad07-\
+7802bd561d13"],
+
+Cell["", "Text",
+ CellChangeTimes->{{3.776745492275339*^9, 
+  3.776745500273342*^9}},ExpressionUUID->"76e95dab-ce8f-4bfc-a1ba-\
+53fe1913655d"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.7767455047258263`*^9, 
+  3.776745505635961*^9}},ExpressionUUID->"628ea7df-4a92-455f-94c4-\
+7c468b0a6b33"]
+}, Open  ]]
+},
+WindowSize->{2560, 1035},
+WindowMargins->{{0, Automatic}, {Automatic, -1058}},
+FrontEndVersion->"12.0 for Linux x86 (64-bit) (April 8, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 181, 3, 99, "Title",ExpressionUUID->"2d38deca-0bb4-4d0d-ad07-7802bd561d13"],
+Cell[764, 27, 142, 3, 36, "Text",ExpressionUUID->"76e95dab-ce8f-4bfc-a1ba-53fe1913655d"],
+Cell[909, 32, 154, 3, 31, "Input",ExpressionUUID->"628ea7df-4a92-455f-94c4-7c468b0a6b33"]
+}, Open  ]]
+}
+]
+*)
+
