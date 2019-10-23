@@ -1,30 +1,36 @@
 # Secure Collateral Reduction for Many Protocols
 
-In decentralized ledger, we replace trust by deposits. This is a requirement to decouple our different identities in various protocol.
-For example, I might want to use several public keys to interact in various protocol.
-Any decentrlaized protocol should further not require a party to go through a KYC process.
-Doing so, removes the decentralized aspect as we need a trusted third party to attest to the correctness of the KYC process.
+In decentralized ledgers, deposits replace implicit trust. Instead of an explicit ranking (e.g. stars on Amazon or karma on Reddit) or personal relationships, an agent (human or machine) trusts another agent (human or machine) if enough coins are provided. These coins represent an assurance that the counterparty has skin in the game. The idea is that if the counterparty misbehaves, a mechanism is able to punish the cheating party and reimburse the agent suffering from those actions.
 
-In practice, protocols use collateral instead. For example, Dai creates a soft-peg to the USD maintained by agents that open CDPs.
-Those agents are expected to maintain their required level of collateral or so-called Keepers will step in and liquidate their CDP.
-Further, Proof-of-Stake (PoS) protocols build on the very notion that we can motivate validators to behave honestly by (1) threatening to destroy their deposit if they cheat and (2) paying them a reward for acting honestly.
+So everything solved in blockchain paradise? Not quite. Determining how much deposit an agent is required is a tricky question. The more deposit an agent has to provide the more "safety" a protocol has as it increases the potential punishment in case of misbehaviour. However, the more deposit required the smaller the set of agents that have enough coins to qualify for participation.
 
-Using deposits as a means of trust is quite inefficient though:
-In most cases it is impossible to determine the exact amount of required collateral.
-This is caused by the fact that collateral is typically provided for a period of time in which e.g. the valuation of a currency fluctuates.
-Moreover, other agents in the system might have hidden motivations, e.g. they are bribed to behave a certain way.
-As a response, protocol require over-collateralization.
-Without over-collateraliation, protocols are prone to the event-dependency and private information based security issues.
+Even worse, most protocols need to account for two main sources of uncertainty. (1) The relative value of the deposit in relation to the risk might change over time, i.e. it is event-dependent. For example, in Dai 150% collateral is required to account for sudden price shocks of the underlying Ether to USD price. (2) Private information needs to be accounted for. For example, an agent might have some hidden motivations, external incentives (bribing), or simple can choose between different protocols.
 
-To lower the burden of over-collateralization, we propose a generalized mechanism for a reduction of collateral in a range of protocols. 
+Event-dependency and private information usually require protocols to over-collateralize. Simply put, if the risk is of value `1`, you add an over-collateralization factor `f` that accounts for both sources of uncertainty. This is the case for most DeFi protocols like Dai or Compound. In other protocols, say TrueBit or PoS staking the risk is not entirely clear. So you have to estimate the risk and require some form of deposit.
+
+## trusty
+
+We proposed trusty as a remedy to the problem of over-collateralization. We do not solve the problem of determining how much collateral is required, but rather offer a way to *securely* reduce existing collateral requirements to a lower bound. trusty is intended to be a plug-in to a range of different protocols.
+
 Suitable protocols for our mechanism have the following properties:
 
-- Require deposits to protect against rational adversaries
-- Require over-collateralization
-- Eventual decision finality
+- Require deposits to protect against rational adversaries.
+- Require over-collateralization (or have no clearly assigned risk value).
+- Require eventually finalized decisions whether or not an agent behaved correctly.
 
 The idea builds on the [Balance paper](https://eprint.iacr.org/2019/675.pdf) and uses it as the core mechanism. 
 The proposal is a response to Problem 12 in [Hard Problems in Cryptocurrencies](https://github.com/ethereum/wiki/wiki/Problems#12-reputation-systems).
+
+
+
+
+
+
+
+
+
+
+
 
 ## Reputation in Blockchains
 
