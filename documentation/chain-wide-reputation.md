@@ -16,32 +16,11 @@ Event-dependency and private information usually require protocols to over-colla
 
 ## Introducing trusty
 
-[graphviz engine=dot]
-
-<img src='https://g.gravizo.com/svg?
-digraph G {
-  concentrate=true;
-  Alice[color=blue, style=filled, fillcolor=lightblue];
-  Bob[color=red, style=filled, fillcolor=lightred];
-  trusty[shape=box, color=green, style=filled, fillcolor=lightgreen];
-  X[shape=box];
-  Y[shape=box];
-  Z[shape=box];
-  Alice -> X;
-  Alice -> Y;
-  Alice -> Z;
-  Bob -> X;
-  Bob -> Y;
-  Bob -> Z;
-  X -> trusty;
-  Y -> trusty;
-  Z -> trusty;
-}
-'/>
-
-[/graphviz]
-
 We propose trusty as a remedy to the problem of over-collateralization. We do not solve the problem of determining how much collateral is required, but rather offer a way to *securely* reduce existing collateral requirements to a lower bound. trusty is intended to be a plug-in to a range of different protocols.
+
+In trusty, Alice interacts with a couple of protocols `X`, `Y`, and `Z` that require a deposit. Those protocols report their interactions with Alice to the trusty smart contract. The trusty smart contract in return tracks how much relative collateral Alice needs to provide in the different protocols. The schematic interactions of trusty are shown in the figure below:
+
+![trusty](figures/trusty.png)
 
 Suitable protocols for our mechanism have the following properties:
 
@@ -76,6 +55,19 @@ We achieve this through the following functionalities:
 3. Collateral Factor Registry: Each agent is mapped to a collateral factor. Each agent starts with the highest possible factor and is able to lower their score based on their actions. Intuitively, the more "desired actions" an agent performs, the lower the collateral factor becomes. However, it is bound by the opportunity cost of the locked collateral. Otherwise, trusty would lower the security against rational agents.
 4. Curation: trusty is split into rounds. An agent collects a score in a round. When the round ends (e.g. after a certain number of blocks or after a point in time), the agents score is considered and one of three consequences will happen. (1) if the agent's score is above the bound of its current collateral factor layer, the agent gets promoted to the next layer reducing its collateral factor. (2) if the agent's score is below the current collateral layer bound the agent is demoted into the previous layer resulting in an increased collateral requirement. (3) if the agent's score is in between the bounds, the agent remains in the same layer. If at any point the agent provably commits an undesired action, e.g. cheats in a protocol or falls below its collateral requirements, the agent is automatically set back to the highest collateral level.
 
+## trusty Step-by-Step
+
+trusty is implemented in six steps.
+
+1. Agents are interacting with a set of protocols. Those protocols return the results of the interactions with the agents, i.e. did the agent behave well? The protocols submit the score of the actions to the trusty smart contract.
+2. The trusty smart contract has two mappings. One mapping that keeps track of the score of the agents and a second mapping that tracks the assignment of agents to layers. Each layer represents a collateral factor. The lower the layer, the higher the collateral factor. Upon receipt of the scores from the protocols, the trusty smart contract updates the mapping of agents to scores.
+3. After a certain number of blocks or a pre-defined time, a period ends and the curation process starts.
+4. The curation process considers the scores of agents and (if necessary) maps agents to new layers. Agents can at most move one layer up at a time. Agents can be reset to the lowest layer when they misbehave.
+5. The end of the curation process resets all agent scores. This ensures that the agents need to *continuously perform desired actions.
+6. The agents can update their collateral in protocols or just enjoy the lower requirements when interacting with other protocols.
+
+![process](figures/process.png)
+
 ## Benefits of trusty
 
 trusty comes with a set of advantages. The main ones are listed here:
@@ -87,9 +79,15 @@ trusty comes with a set of advantages. The main ones are listed here:
 
 ## Possible Attacks
 
+As this is a work in progress, we have not yet found a mitigation for all attack strategies. In our earlier work on Balance, we can show that we can integrate trusty into a single protocol. However, it remains an open question if *transitive* reputation between protocols can be implemented safely.
+
 ### Sybil identities
 
 An agent could create multiple identities to generate more "desired actions" and thereby lower its relative deposit in all integrated protocols.
+
+**Mitigation**: In Balance, we propose to limit the total deposit a single public key can provide to mitigate Sybil identities. We assume there is a non-zero transaction cost with executing the Sybil attack, so executing the Sybil attack would only be beneficial if the absolute gain in collateral reduction is greater than the cost. By disallowing large amounts of deposit, we increase the relative cost of the attack.
+
+However, this does not translate well into the composition of multiple protocols. Our idea is to rather encourage agents to stick to a single identity within one protocol by proportionally allowing them higher collateral reduction with larger stake. That way, agents should not split their available funds over multiple identities, but rather, remain with a single identity.
 
 ### Adversarial protocols
 
@@ -97,15 +95,18 @@ One could add adversarial protocols that report arbitrary results. For example, 
 
 If Eve can convince trusty to add her protocol `EVIL` to the list of integrated protocols and Eve can convince Alice to participate, then Eve could report "undesired actions" by Alice that would lead to Alice falling back to the highest collateral level. Similarly, Eve could create such a protocol and allow disproportionally high rewards for desired actions for herself.
 
+**Mitigation**: This is an open research question. One way to solve it would be to have a committee or a governance token with which existing agents can vote which new protocols to include. However, proving that this is secure is not trivial.
+
 ### Privacy concerns
 
 Assuming Alice uses the same public key in any protocol, others could trivially learn quite a lot about Alice. Even though transactions in Ethereum are public, it takes at least *some* effort to correlate different identities. If Alice is required to use the same public key across different protocols, trusty would give a clear log of Alice's actions.
 
-**Mitigation**:  
+**Mitigation**: This is an open question as well. One way could be to let Alice prove that she owns multiple public keys to the trusty smart contract in zero knowledge. trusty could then link multiple public keys together without knowing who they belong to.
 
 
 ## Next Steps
 
-- Formal security proofs: 
-- Proof of concept implementation:
-
+- Formal security proofs: We want to prove that trusty is secure when integrated into several protocols. We are working on extending our formal model from the [Balance paper](https://eprint.iacr.org/2019/675.pdf).
+- Practical applicability: We want to find a way to integrate other protocols without having to change their code.
+- Proof of concept implementation: We want to extend the [Balance smart contracts](https://github.com/nud3l/balance) for multiple protocols.
+- Privacy features: We want to explore how to ensure privacy of agents integrating with trusty.
